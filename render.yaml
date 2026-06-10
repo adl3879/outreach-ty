@@ -10,17 +10,13 @@ services:
       npx prisma migrate deploy
     startCommand: npm start
     plan: free
-    disk:
-      name: sqlite-data
-      mountPath: /opt/render/project/backend/prisma
-      sizeGB: 1
     envVars:
       - key: NODE_ENV
         value: production
       - key: PORT
         value: "10000"
       - key: DATABASE_URL
-        value: file:/opt/render/project/backend/prisma/dev.db
+        value: file:./dev.db
       - key: GOOGLE_PLACES_API_KEY
         sync: false
       - key: GMAIL_USER
