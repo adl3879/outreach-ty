@@ -1,4 +1,5 @@
 import path from "path";
+import fs from "fs";
 import express from "express";
 import cors from "cors";
 import leadsRouter from "./routes/leads";
@@ -17,16 +18,19 @@ app.use("/api/fetch", fetchRouter);
 app.use("/api/email", emailRouter);
 app.use("/api/settings", settingsRouter);
 
-const frontendDist = path.join(__dirname, "../../frontend/dist");
-app.use(express.static(frontendDist));
-app.get("*", (_req, res) => {
-  const indexPath = path.join(frontendDist, "index.html");
-  if (require("fs").existsSync(indexPath)) {
-    res.sendFile(indexPath);
-  } else {
+const publicDir = path.resolve(process.cwd(), "public");
+if (fs.existsSync(publicDir)) {
+  console.log(`Serving static files from ${publicDir}`);
+  app.use(express.static(publicDir));
+  app.get("*", (_req, res) => {
+    res.sendFile(path.join(publicDir, "index.html"));
+  });
+} else {
+  console.log(`No public dir at ${publicDir}, API-only mode`);
+  app.get("*", (_req, res) => {
     res.status(404).json({ error: "Not found" });
-  }
-});
+  });
+}
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
