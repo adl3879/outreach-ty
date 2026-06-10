@@ -1,0 +1,56 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Lead {
+  id              String     @id @default(uuid())
+  placeId         String     @unique
+  name            String
+  address         String
+  phone           String?
+  rating          Float?
+  mapsUrl         String
+  onlinePresence  String?
+  description     String?
+  priceLevel      String?
+  userRatingCount Int?
+  businessType    String
+  location        String
+  status          String     @default("FETCHED")
+  email           String?
+  phoneContactedAt DateTime?
+  emailSentAt     DateTime?
+  deletedAt       DateTime?
+  notes           Note[]
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+}
+
+model Note {
+  id        String   @id @default(uuid())
+  leadId    String
+  lead      Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  text      String
+  createdAt DateTime @default(now())
+}
+
+model Template {
+  id           String @id @default(uuid())
+  businessType String @unique
+  subject      String
+  body         String
+  updatedAt    DateTime @updatedAt
+}
+
+model Settings {
+  id              Int     @id @default(1)
+  defaultBizType  String  @default("restaurant")
+  defaultLocation String  @default("Victoria Island, Lagos")
+  defaultRadius   Int     @default(2000)
+  updatedAt       DateTime @updatedAt
+}

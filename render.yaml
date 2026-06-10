@@ -1,0 +1,35 @@
+services:
+  - type: web
+    name: outreach-ty
+    env: node
+    rootDir: backend
+    buildCommand: |
+      cd ../frontend && npm install && npm run build
+      npm install
+      npx prisma generate
+      npx prisma migrate deploy
+    startCommand: npm start
+    plan: free
+    disk:
+      name: sqlite-data
+      mountPath: /opt/render/project/backend/prisma
+      sizeGB: 1
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "10000"
+      - key: DATABASE_URL
+        value: file:/opt/render/project/backend/prisma/dev.db
+      - key: GOOGLE_PLACES_API_KEY
+        sync: false
+      - key: GMAIL_USER
+        sync: false
+      - key: GMAIL_APP_PASSWORD
+        sync: false
+      - key: SENDER_NAME
+        sync: false
+      - key: SENDER_PHONE
+        sync: false
+      - key: SENDER_PORTFOLIO
+        sync: false
