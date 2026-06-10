@@ -1,4 +1,4 @@
-const BASE_URL = "/api";
+const BASE_URL = import.meta.env.VITE_API_URL ?? "";
 
 async function request<T>(
   method: string,
@@ -12,7 +12,7 @@ async function request<T>(
   if (data) {
     config.body = JSON.stringify(data);
   }
-  const res = await fetch(`${BASE_URL}${url}`, config);
+  const res = await fetch(`${BASE_URL}/api${url}`, config);
   const json = await res.json();
   if (!res.ok) {
     throw new Error(json.error ?? res.statusText);

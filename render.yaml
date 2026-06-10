@@ -1,11 +1,9 @@
 services:
   - type: web
-    name: outreach-ty
+    name: outreach-ty-api
     env: node
     rootDir: backend
     buildCommand: |
-      (cd ../frontend && npm install && npm run build)
-      cp -r ../frontend/dist ./public
       npm install
       npx prisma generate
       npx prisma migrate deploy
@@ -30,3 +28,14 @@ services:
         sync: false
       - key: SENDER_PORTFOLIO
         sync: false
+
+  - type: web
+    name: outreach-ty
+    env: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    plan: free
+    envVars:
+      - key: VITE_API_URL
+        value: https://outreach-ty-api.onrender.com
